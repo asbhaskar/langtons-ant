@@ -18,7 +18,6 @@ const c = document
 c.canvas.width = document.body.clientWidth
 c.canvas.height = document.body.clientHeight
 
-console.log(c)
 class Ant {
     constructor(xMax, yMax) {
         this.x = Math.floor(Math.random() * xMax)
@@ -95,18 +94,20 @@ class Ant {
 }
 
 class Tile {
-    constructor(x, y) {
+    constructor(x, y, tileWidth, tileHeight) {
         this.x = x
         this.y = y
+        this.tileWidth = tileWidth
+        this.tileHeight = tileHeight
         this.isActive = false
     }
 
-    drawRect = (x, y, tileWidth, tileHeight, fillColor, strokeColor) => {
+    drawRect = (row, col, fillColor, strokeColor) => {
         c.lineWidth = 0.05
         c.fillStyle = fillColor
-        c.fillRect(x, y, tileWidth, tileHeight)
+        c.fillRect(row * this.tileWidth, col * this.tileHeight, this.tileWidth, this.tileHeight)
         c.strokeStyle = strokeColor
-        c.strokeRect(x, y, tileWidth, tileHeight)
+        c.strokeRect(row * this.tileWidth, col * this.tileHeight, this.tileWidth, this.tileHeight)
     }
 }
 
@@ -122,8 +123,8 @@ const tileStates = {}
 
 for (let i = 0; i < widthCount; i++) {
     for (let j = 0; j < widthCount; j++) {
-        const tile = new Tile(i, j)
-        tile.drawRect(i * tileWidth,j * tileHeight, tileWidth, tileHeight, '#fff', '#000')
+        const tile = new Tile(i, j, tileWidth, tileHeight)
+        tile.drawRect(i, j, '#fff', '#000')
         const key = `${i},${j}`
         tileStates[key] = tile
     }
@@ -136,11 +137,11 @@ setInterval(() => {
     let isCurrTileActive = currTile.isActive
     if (!isCurrTileActive) {
         currTile.isActive = true
-        currTile.drawRect(ant.x * tileWidth, ant.y * tileHeight, tileWidth, tileHeight, '#000', '#000')
+        currTile.drawRect(ant.x, ant.y, '#000', '#000')
     }
     if (isCurrTileActive) {
         currTile.isActive = false
-        currTile.drawRect(ant.x * tileWidth, ant.y * tileHeight, tileWidth, tileHeight, '#fff', '#000')
+        currTile.drawRect(ant.x, ant.y, '#fff', '#000')
     }
     ant.nextStep(isCurrTileActive)
 }, 10)
